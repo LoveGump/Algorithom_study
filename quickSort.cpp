@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 using namespace std;
-
+// 快排 https://leetcode.cn/problems/sort-an-array/description/
 class Solution {
 public:
   vector<int> sortArray(vector<int> &nums) {
