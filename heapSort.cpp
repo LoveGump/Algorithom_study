@@ -76,7 +76,7 @@ using namespace std;
 class Solution {
 public:
   vector<int> sortArray(vector<int> &nums) {
-    heapSort(nums, nums.size());
+    heapSort1(nums, nums.size());
     return nums;
   }
   void swap(vector<int> &nums, int a, int b) {
@@ -101,8 +101,8 @@ public:
       l = (i << 1) + 1;
     }
   }
-  // 堆排序
-  void heapSort(vector<int> &nums, int n) {
+  // 堆排序，从底到顶建堆
+  void heapSort1(vector<int> &nums, int n) {
     // 构建大顶堆
     for (int i = n / 2 - 1; i >= 0; i--) {
       heapify(nums, i, n);
@@ -114,4 +114,5 @@ public:
       heapify(nums, 0, i); // 调整剩余的堆
     }
   }
+ 
 };
