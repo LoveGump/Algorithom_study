@@ -1,0 +1,37 @@
+# 忽略所有无扩展名文件（通常是Unix/Linux可执行文件）
+*
+!*/
+!*.*
+
+# 忽略特定扩展名的可执行文件
+*.exe
+*.out
+*.app
+
+# 忽略编译中间文件
+*.o
+*.obj
+*.gch
+*.pch
+*.so
+*.dylib
+*.dll
+
+# 忽略编译生成的目录
+/build/
+/Debug/
+/Release/
+/x64/
+/bin/
+
+# 保留所有.cpp/.h文件
+!*.cpp
+!*.h
+!*.hpp
+
+# IDE和编辑器临时文件
+.vscode/
+.idea/
+*.suo
+*.user
+.DS_Store
