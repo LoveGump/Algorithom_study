@@ -1,15 +1,13 @@
+// https://leetcode.cn/problems/minimum-operations-to-halve-array-sum/submissions/627977950/
+// 优化思路：自己实现堆 ； 然后对double类型的数进行操作
 #include <algorithm>
 #include <iostream>
-#include <vector>
 #include <queue>
+#include <vector>
 using namespace std;
-
 class Solution {
 public:
-  int halveArray(vector<int> &nums) {
-    return solution(nums);
-
-  }
+  int halveArray(vector<int> &nums) { return solution(nums); }
   int solution(vector<int> &nums) {
     int n = nums.size();
     priority_queue<double> pq;
@@ -27,6 +25,6 @@ public:
       pq.push(top / 2);
       ++ans;
     }
-    return ans;  
+    return ans;
   }
 };
