@@ -2,7 +2,7 @@
 
 # 检查是否提供了文件名参数
 if [ $# -eq 0 ]; then
-    echo "Usage: $0 <filename>"
+    echo "Usage: $0 <filename> [commit_message]"
     exit 1
 fi
 
@@ -25,9 +25,13 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+# 设置commit消息
+commit_message=${2:-"Format $filename using clang-format"}
+
 # 提交到本地仓库
 echo "Committing changes..."
 git add "$filename"
-git commit -m "Format $filename using clang-format"
+git commit -m "$commit_message"
+git push
 
 echo "Done!"
