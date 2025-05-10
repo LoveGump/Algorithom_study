@@ -35,12 +35,10 @@ class Solution {
             while (size--) {
                 TreeNode *curr = arr[l].first;
                 if (curr && curr->left) {
-                    arr[r++] = {curr->left, (arr[l].second << 1) +
-                                                1};  // 使用父节点的位置计算
+                    arr[r++] = {curr->left, (arr[l].second << 1) + 1};
                 }
                 if (curr && curr->right) {
-                    arr[r++] = {curr->right, (arr[l].second << 1) +
-                                                 2};  // 使用父节点的位置计算
+                    arr[r++] = {curr->right, (arr[l].second << 1) + 2};
                 }
                 l++;
             }
