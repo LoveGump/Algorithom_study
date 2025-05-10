@@ -15,6 +15,10 @@ if [ ! -f "$filename" ]; then
     exit 1
 fi
 
+# 先同步远程仓库
+echo "Syncing with remote repository..."
+git pull
+
 # 使用clang-format格式化文件
 echo "Formatting $filename..."
 clang-format -i "$filename"
@@ -32,6 +36,10 @@ commit_message=${2:-"Format $filename using clang-format"}
 echo "Committing changes..."
 git add "$filename"
 git commit -m "$commit_message"
+
+# 再次同步并推送
+echo "Syncing and pushing changes..."
+git pull --rebase
 git push
 
 echo "Done!"
