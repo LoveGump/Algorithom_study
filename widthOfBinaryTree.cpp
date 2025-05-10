@@ -33,6 +33,8 @@ class Solution {
                            ? maxWidth
                            : (rightPos - leftPos + 1);
             while (size--) {
+                //
+                //
                 TreeNode *curr = arr[l].first;
                 if (curr && curr->left) {
                     arr[r++] = {curr->left, (arr[l].second << 1) +
