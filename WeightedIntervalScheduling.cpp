@@ -2,6 +2,7 @@
 using namespace std;
 
 const int MAX_REQ_NUM = 30;
+const int MIN_INTERVAL = 4;  // 最小间隔时间
 
 struct Request {
   int beginTime;
@@ -29,10 +30,10 @@ public:
     sort(reqs + 1, reqs + requestNum + 1);
     // 初始化p数组
     memset(p, 0, sizeof(p));
-    // 计算每个请求的前一个请求
+    // 计算每个请求的前一个请求，确保间隔至少为MIN_INTERVAL
     for (int i = 1; i <= requestNum; ++i) {
       for (int j = i-1; j > 0; --j) {
-        if (reqs[j].endTime <= reqs[i].beginTime) {
+        if (reqs[j].endTime + MIN_INTERVAL <= reqs[i].beginTime) {
           p[i] = j;
           break;
         }
@@ -62,7 +63,7 @@ public:
          << "\n[Activities]:\n";
     for (int i = requestNum; i > 0; i = record[i][1]) {
       if (record[i][0] == 1) {
-        cout << "activity-" << i << endl;
+        cout << "activity-" << i << " (" << reqs[i].beginTime << "-" << reqs[i].endTime << ")" << endl;
       }
     }
   }
