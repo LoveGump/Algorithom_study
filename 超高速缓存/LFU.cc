@@ -1,6 +1,12 @@
 #include <iostream>
 #include <unordered_map>
 #include <list>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <chrono>
+#include <iomanip>
+
 using namespace std;
 
 /**
@@ -25,7 +31,6 @@ public:
     ValueType get(const KeyType& key) {
         if (cache_map_.find(key) == cache_map_.end()) {
             miss_count_++;
-            cout << "key not found!!!" << endl;
             return ValueType();
         }
         touch(key);
@@ -122,31 +127,103 @@ private:
     size_t miss_count_ = 0;
 };
 
-int main() {
-    size_t capacity;
-    cout << "请输入缓存容量: ";
-    cin >> capacity;
-    LFUCache<int, int> cache(capacity);
-    cout << "请输入操作序列，每行一个操作（put key value/get key），输入end结束：" << endl;
-    string op;
-    while (cin >> op) {
-        if (op == "end") break;
-        if (op == "put") {
-            int key, value;
-            cin >> key >> value;
-            cache.put(key, value);
-            cout << "put(" << key << ", " << value << ")\t";
-        } else if (op == "get") {
-            int key;
-            cin >> key;
-            int value = cache.get(key);
-            cout << "get(" << key << ") = " << value << "\t";
-        } else {
-            cout << "未知操作: " << op << endl;
-            continue;
-        }
-        cache.display();
-        cout << "Miss count: " << cache.get_miss_count() << endl;
+// 性能统计结构
+struct PerformanceStats {
+    size_t hit_count = 0;
+    size_t miss_count = 0;
+    double total_time = 0.0;
+    
+    double hit_rate() const {
+        return static_cast<double>(hit_count) / (hit_count + miss_count);
     }
+    
+    double average_access_time() const {
+        return total_time / (hit_count + miss_count);
+    }
+};
+
+// 测试单个访问模式
+PerformanceStats test_pattern(const string& pattern_file, size_t capacity) {
+    PerformanceStats stats;
+    LFUCache<int, int> cache(capacity);
+    
+    // 读取测试数据
+    ifstream file(pattern_file);
+    if (!file.is_open()) {
+        cerr << "无法打开文件: " << pattern_file << endl;
+        return stats;
+    }
+    
+    string line;
+    while (getline(file, line)) {
+        int key = stoi(line);
+        
+        // 记录开始时间
+        auto start = chrono::high_resolution_clock::now();
+        
+
+        cache.put(key, key);  // 使用key作为value
+        // 记录结束时间
+        auto end = chrono::high_resolution_clock::now();
+        stats.total_time += chrono::duration<double>(end - start).count();
+    }
+    stats.miss_count = cache.get_miss_count();
+    stats.hit_count = 100000 - stats.miss_count;
+    
+    return stats;
+}
+
+int main() {
+    // 测试参数
+    vector<size_t> cache_sizes = {
+        16,     // 最小缓存大小
+        64,     // 4倍
+        256,    // 16倍
+        1024,   // 64倍
+        4096    // 最大缓存大小
+    };
+    string test_data_dir = "test_data";
+    
+    // 创建结果目录
+    system("mkdir -p results");
+    
+    // 对每个缓存大小进行测试
+    for (size_t capacity : cache_sizes) {
+        cout << "\n测试配置: 缓存大小=" << capacity 
+             << " (" << (capacity * 100.0 / 100000) << "% of data space)" << endl;
+        cout << "----------------------------------------" << endl;
+        
+        // 测试所有访问模式
+        vector<string> patterns = {
+            "sequential", "circular", "random", 
+            "zipf", "locality", "burst", "mixed"
+        };
+        
+        // 创建结果文件
+        ofstream result_file("results/lfu_" + to_string(capacity) + ".csv");
+        result_file << "Pattern,HitRate,AvgAccessTime,MissCount" << endl;
+        
+        for (const string& pattern : patterns) {
+            string pattern_file = test_data_dir + "/" + pattern + "_access.txt";
+            PerformanceStats stats = test_pattern(pattern_file, capacity);
+            
+            // 输出结果
+            cout << pattern << " 访问模式:" << endl;
+            cout << "  命中率: " << fixed << setprecision(4) << stats.hit_rate() * 100 << "%" << endl;
+            cout << "  平均访问时间: " << fixed << setprecision(6) << stats.average_access_time() * 1000000 << " μs" << endl;
+            cout << "  未命中次数: " << stats.miss_count << endl;
+            cout << endl;
+            
+            // 保存到CSV文件
+            result_file << pattern << ","
+                      << stats.hit_rate() << ","
+                      << stats.average_access_time() << ","
+                      << stats.miss_count << endl;
+        }
+        
+        result_file.close();
+    }
+    
+    cout << "\n测试完成！结果已保存到 results 目录" << endl;
     return 0;
 }

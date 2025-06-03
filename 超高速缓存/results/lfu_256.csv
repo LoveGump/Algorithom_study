@@ -1,0 +1,8 @@
+Pattern,HitRate,AvgAccessTime,MissCount
+sequential,0,2.54309e-07,100000
+circular,0,2.03378e-07,100000
+random,0.02548,3.11097e-07,97452
+zipf,0.58962,2.51406e-07,41038
+locality,0.033,2.3977e-07,96700
+burst,0.02252,3.20404e-07,97748
+mixed,0.09964,2.54289e-07,90036

@@ -1,0 +1,24 @@
+{
+  "sequence_length": 100000,
+  "data_space_size": 10000,
+  "cache_sizes": [
+    16,
+    32,
+    64,
+    128,
+    256,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "patterns": [
+    "sequential",
+    "circular",
+    "random",
+    "zipf",
+    "locality",
+    "burst",
+    "mixed"
+  ]
+}
